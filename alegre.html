@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alegre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --dark: #050505; }
+        body { background: var(--dark); color: white; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; overflow: hidden; }
+        #stars { position: fixed; inset: 0; z-index: -1; }
+        .card { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); padding: 40px; border-radius: 30px; backdrop-filter: blur(15px); text-align: center; max-width: 320px; animation: scaleUp 0.8s ease; }
+        h1 { font-family: 'Great Vibes', cursive; color: var(--gold); font-size: 3rem; margin-bottom: 20px; }
+        p { line-height: 1.8; font-weight: 300; margin-bottom: 30px; }
+        .back-btn { text-decoration: none; color: var(--dark); background: var(--gold); padding: 10px 25px; border-radius: 50px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <div class="card">
+        <h1>Alegre</h1>
+        <p>Sua alegria é contagiante! Desde aquele primeiro dia no culto, percebi que seu sorriso ilumina qualquer lugar. Nunca perca esse brilho que só você tem.</p>
+        <a href="pag2.html" class="back-btn">Voltar</a>
+    </div>
+    <script>
+        const canvas = document.getElementById('stars'); const ctx = canvas.getContext('2d');
+        function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#d4af37"; for(let i=0; i<80; i++) { ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2); ctx.fill(); } }
+        init(); draw();
+    </script>
+</body>
+</html>

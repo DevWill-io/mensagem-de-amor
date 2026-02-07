@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Um Convite Especial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f1d592;
+            --accent: #ff4d6d;
+            --dark: #050505;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Reset e Base */
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100svh;
+            background-color: var(--dark);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* Fundo Dinâmico */
+        #stars-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #photo-background {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            display: none;
+        }
+
+        .ambient-light {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(0,0,0,0.85) 100%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Estrutura do Card Principal */
+        .stage {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .glass-card {
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 45px 30px;
+            text-align: center;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7), 
+                        inset 0 0 20px rgba(255,255,255,0.05);
+            animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.2rem, 10vw, 3.5rem);
+            background: linear-gradient(to right, var(--gold-light), var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-weight: 300;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 25px;
+        }
+
+        #success-screen .message {
+            max-height: 40vh; /* Ajustado para caber o botão embaixo */
+            overflow-y: auto;
+            padding-right: 5px;
+            text-align: justify;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 100px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-yes { background: var(--gold); color: #000; }
+        .btn-no { background: transparent; color: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); }
+
+        /* Estilo para a Pergunta Final e Botão de Próxima Página */
+        .next-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .next-question {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: var(--gold-light);
+            display: block;
+        }
+
+        .btn-next {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid var(--gold);
+            font-size: 0.75rem;
+        }
+        
+        .btn-next:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        #success-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .heart {
+            font-size: 4rem;
+            color: var(--accent);
+            animation: beat 1.4s infinite;
+            margin-bottom: 10px;
+        }
+
+        #confetti-layer { position: absolute; inset: 0; pointer-events: none; z-index: 101; }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .hidden { display: none !important; }
+
+        #success-screen .message::-webkit-scrollbar { width: 4px; }
+        #success-screen .message::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="stars-canvas"></canvas>
+    <div class="ambient-light"></div>
+
+    <div class="stage">
+        <main id="proposal-card" class="glass-card">
+            <h1>Para Você ritinha, Meu Amor♥♥</h1>
+            <p class="message">
+                Há momentos na vida que pedem mais do que palavras silenciosas. 
+                Sua presença ilumina cada canto obscuro da minha rotina.
+            </p>
+            <span class="question">Você aceita ser meu Amor pro resto da vida?</span>
+            
+            <div class="btn-group">
+                <button id="sim-btn" class="btn btn-yes">Sim, eu aceito</button>
+                <button id="nao-btn" class="btn btn-no">Não</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="success-screen">
+        <canvas id="confetti-layer"></canvas>
+        <div class="glass-card" style="background: rgba(0,0,0,0.7);">
+            <span class="heart">♥</span>
+            <h1 style="font-size: 2.2rem;">Eu Te Amo, Meu Amor</h1>
+            <div class="message">
+                Fiz essa mensagem em site pra vc espero q goste kkkkkkk, vc foi e continua sendo a pessoa mais incrivel q já esteve na minha vida, meu mundo minha vida melhorou muito muito mais quando vc começou a fazer a parte dele, agradeço a deus TODO dia por vc esta comigo, aguentar minhas presepada kkkkkkk, as minhas brincadeiras e as cosquinhas kkkkkk, Obrigado por tornar o meu mundo mais feliz, mais completo, vc desde o momento em q eu te vi pela primeira vez la no culto, eu sabia q algo em vc era diferente nn sabia explicar mais sabia q tinha, vc era de uma certa forma sorridente alegre feliz, isso foi uma das coisas q eu mais me apaixonei em vc, você é amorosa, carinhosa e isso faz com q vc se torne ainda mais especial, Por Isso pra hj e sempre serei e estarei aqui pra você somente pra você, Eu Te Amo Meu Amor e sempre vou amar ♥♥
+            </div>
+
+            <div class="next-section">
+                <span class="next-question">Ir para próxima página?</span>
+                <button id="next-page-btn" class="btn btn-next">Próxima Página</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ESTRELAS ---
+        const sCanvas = document.getElementById('stars-canvas');
+        const sCtx = sCanvas.getContext('2d');
+        let stars = [];
+
+        function resizeStars() {
+            sCanvas.width = window.innerWidth;
+            sCanvas.height = window.innerHeight;
+            stars = Array.from({ length: 120 }, () => ({
+                x: Math.random() * sCanvas.width,
+                y: Math.random() * sCanvas.height,
+                size: Math.random() * 1.5,
+                opacity: Math.random(),
+                blink: Math.random() * 0.02
+            }));
+        }
+
+        function drawStars() {
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            stars.forEach(s => {
+                sCtx.fillStyle = `rgba(212, 175, 55, ${s.opacity})`;
+                sCtx.beginPath(); sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2); sCtx.fill();
+                s.opacity += s.blink;
+                if(s.opacity > 1 || s.opacity < 0) s.blink *= -1;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        // --- CONFETES ---
+        const cCanvas = document.getElementById('confetti-layer');
+        const cCtx = cCanvas.getContext('2d');
+        let particles = [];
+
+        function startConfetti() {
+            cCanvas.width = window.innerWidth;
+            cCanvas.height = window.innerHeight;
+            particles = Array.from({ length: 80 }, () => ({
+                x: Math.random() * cCanvas.width,
+                y: -20,
+                size: Math.random() * 5 + 2,
+                color: Math.random() > 0.5 ? '#d4af37' : '#ff4d6d',
+                speedY: Math.random() * 2 + 2,
+                speedX: (Math.random() - 0.5) * 2
+            }));
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+            particles.forEach(p => {
+                p.y += p.speedY; p.x += p.speedX;
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(p.x, p.y, p.size, p.size);
+                if(p.y > cCanvas.height) p.y = -20;
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        // --- INTERAÇÕES ---
+        document.getElementById('nao-btn').addEventListener('click', () => {
+    window.location.href = "recusa.html";
+});
+
+        document.getElementById('sim-btn').addEventListener('click', () => {
+            document.querySelector('.stage').classList.add('hidden');
+            document.getElementById('success-screen').style.display = 'flex';
+            startConfetti();
+        });
+
+        // AÇÃO DO NOVO BOTÃO
+        document.getElementById('next-page-btn').addEventListener('click', () => {
+            window.location.href = 'pag2.html';
+        });
+
+        window.addEventListener('resize', resizeStars);
+        resizeStars(); drawStars();
+    </script>
+</body>
+</html>

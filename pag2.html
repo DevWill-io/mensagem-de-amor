@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>O que eu mais amo em você</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        #stars-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+
+        .qualities-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        /* Estilo do Cartão/Botão */
+        .quality-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 25px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none; /* Remove sublinhado de link */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slideUp 1s ease forwards;
+            opacity: 0;
+        }
+
+        .quality-card:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .quality-card span {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .final-message {
+            background: var(--glass);
+            border: 1px solid var(--gold);
+            padding: 25px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .quality-card:nth-child(1) { animation-delay: 0.2s; }
+        .quality-card:nth-child(2) { animation-delay: 0.4s; }
+        .quality-card:nth-child(3) { animation-delay: 0.6s; }
+        .quality-card:nth-child(4) { animation-delay: 0.8s; }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="stars-canvas"></canvas>
+
+    <div class="container">
+        <h1>Motivos do meu Sorriso</h1>
+
+        <div class="qualities-grid">
+            <a href="alegre.html" class="quality-card">
+                <span>Alegre</span>
+            </a>
+            <a href="carinhosa.html" class="quality-card">
+                <span>Carinhosa</span>
+            </a>
+            <a href="amorosa.html" class="quality-card">
+                <span>Amorosa</span>
+            </a>
+            <a href="incrivel.html" class="quality-card">
+                <span>Incrível</span>
+            </a>
+        </div>
+
+        <div class="final-message">
+            "Sabe, o que eu vi em você naquele culto foi só o começo. Hoje, vejo que você é muito mais do que eu poderia imaginar."
+        </div>
+    </div>
+
+    <script>
+        // Mesmo script das estrelas para manter o padrão
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = Array.from({ length: 100 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5,
+                opacity: Math.random(),
+                blink: Math.random() * 0.02
+            }));
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => {
+                ctx.fillStyle = `rgba(212, 175, 55, ${s.opacity})`;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+                s.opacity += s.blink;
+                if(s.opacity > 1 || s.opacity < 0) s.blink *= -1;
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', initStars);
+        initStars(); draw();
+    </script>
+</body>
+</html>
